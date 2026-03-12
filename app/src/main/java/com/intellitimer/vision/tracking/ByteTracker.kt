@@ -28,8 +28,8 @@ class ByteTracker {
         // [지침 3] AI 공간 경계 (416×416)
         private const val AI_SIZE = 416f
 
-        // [지침 1] 사전 Global Motion: 30px 이내 명확한 짝
-        private const val PRE_PAIR_THRESH_SQ = 30f * 30f
+        // [지침 1] 사전 Global Motion: 80px 이내 명확한 짝 (빠른 카메라 패닝 대응)
+        private const val PRE_PAIR_THRESH_SQ = 80f * 80f
 
         // [지침 3] Coasting 마찰력: 매 프레임 곱해서 스르륵 소멸
         private const val COASTING_FRICTION  = 0.6f
@@ -182,7 +182,10 @@ class ByteTracker {
             }
         }
 
-        // Phase 4 — Update + [지침 2] rawDx 수집 (oldCx 먼저 읽고 updateSlot 호출)
+        // ══════════════════════════════════════════════════════════════════════
+        // Phase 4 — Two-Pass Update (Fix: velocityX/Y uses postGlobalDx)
+        // Pass 1: rawDx 수집 + rect/meta 업데이트만 (velocity 는 아직 건드리지 않음)
+        // ══════════════════════════════════════════════════════════════════════
         matchedCount = 0
         for (p in 0 until pendingCount) {
             val ti = pendingTi[p]; val di = pendingDi[p]
@@ -191,22 +194,23 @@ class ByteTracker {
             matchedRawDx[matchedCount] = detections[di].rect.centerX() - oldCx
             matchedRawDy[matchedCount] = detections[di].rect.centerY() - oldCy
             matchedTi[matchedCount++]  = ti
-            updateSlot(ti, detections[di], globalDx, globalDy)
+            updateSlotMeta(ti, detections[di])
         }
 
-        // [지침 2] 매칭된 객체 rawDx 중앙값 → 정확한 post-global motion
+        // [지침 2] 매칭 후 rawDx 중앙값 → 정확한 post-global motion
         val postGlobalDx = if (matchedCount >= 2) median(matchedRawDx, matchedCount) else globalDx
         val postGlobalDy = if (matchedCount >= 2) median(matchedRawDy, matchedCount) else globalDy
 
-        // [지침 3] 객체별 순수 속도 EMA (Ego-Motion 제거)
+        // Pass 2: 정확한 postGlobalDx 로 velocityX/Y + trueVx/isMoving 갱신
         for (m in 0 until matchedCount) {
             val ti    = matchedTi[m]
             val track = trackPool[ti]
+            updateSlotVelocity(ti, matchedRawDx[m], matchedRawDy[m], postGlobalDx, postGlobalDy)
             val instTrueVx = matchedRawDx[m] - postGlobalDx
             val instTrueVy = matchedRawDy[m] - postGlobalDy
             track.trueVx   = track.trueVx * 0.8f + instTrueVx * 0.2f
             track.trueVy   = track.trueVy * 0.8f + instTrueVy * 0.2f
-            track.isMoving = Math.hypot(track.trueVx.toDouble(), track.trueVy.toDouble()) >= 0.5
+            track.isMoving = Math.hypot(track.trueVx.toDouble(), track.trueVy.toDouble()) >= 1.5
         }
 
         // Phase 5 — Spawn
@@ -280,23 +284,24 @@ class ByteTracker {
         return result
     }
 
-    private fun updateSlot(ti: Int, det: Detection, globalDx: Float, globalDy: Float) {
+    /** Pass 1: rect/meta 업데이트만. velocity 는 updateSlotVelocity 에서 처리. */
+    private fun updateSlotMeta(ti: Int, det: Detection) {
         val track = trackPool[ti]
         track.detection.classId    = det.classId
         track.detection.confidence = det.confidence
         missingCnt[ti]       = 0
         track.invisibleCount = 0
         if (confirmCnt[ti] < 255) confirmCnt[ti]++
-
-        val oldCx = track.detection.rect.centerX()
-        val oldCy = track.detection.rect.centerY()
-
         // BBox raw 스냅 (EMA 없음)
         track.detection.rect.set(det.rect)
+    }
 
-        // [지침 4] 순수 이동량 = (new_cx - old_cx) - globalDx
-        val pureDx = (det.rect.centerX() - oldCx) - globalDx
-        val pureDy = (det.rect.centerY() - oldCy) - globalDy
+    /** Pass 2: 정확한 postGlobalDx 로 velocityX/Y EMA 갱신. */
+    private fun updateSlotVelocity(ti: Int, rawDx: Float, rawDy: Float, postGlobalDx: Float, postGlobalDy: Float) {
+        val track = trackPool[ti]
+        // [지침 4] 순수 이동량 = rawDx - postGlobalDx
+        val pureDx = rawDx - postGlobalDx
+        val pureDy = rawDy - postGlobalDy
 
         val dz = TrackerConfig.deadZone.toDouble()
         val instVx: Float; val instVy: Float

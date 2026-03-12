@@ -180,6 +180,7 @@ class OverlayView @JvmOverloads constructor(
     // ─── Layer 1-3: 궤적 (AI416 → display 인라인 변환) ───────────────────────
 
     private fun drawTrajectory(canvas: Canvas, obj: TrackedObject, color: Int) {
+        if (!obj.isMoving) return
         val traj = obj.predictedTrajectory
         val n = traj.size
         if (n < 2) return
