@@ -79,7 +79,13 @@ class ByteTracker {
     private val matchedTi    = IntArray(MAX_TRACKS)
     private var matchedCount  = 0
 
-    fun update(detections: List<Detection>): List<TrackedObject> {
+    /**
+     * @param gyroGlobalDx  GyroEgoMotion.consumeDelta() 에서 얻은 X 픽셀 변위 (AI 416 공간)
+     * @param gyroGlobalDy  GyroEgoMotion.consumeDelta() 에서 얻은 Y 픽셀 변위 (AI 416 공간)
+     */
+    fun update(detections: List<Detection>,
+               gyroGlobalDx: Float = 0f,
+               gyroGlobalDy: Float = 0f): List<TrackedObject> {
         result.clear()
         val nDet = detections.size.coerceAtMost(detMatched.size)
 
@@ -201,22 +207,46 @@ class ByteTracker {
         val postGlobalDx = if (matchedCount >= 2) median(matchedRawDx, matchedCount) else globalDx
         val postGlobalDy = if (matchedCount >= 2) median(matchedRawDy, matchedCount) else globalDy
 
-        // globalDx 추정 신뢰성: 2개 이상 참조쌍이 있어야 카메라↔객체 분리 가능
-        val hasReliableGlobal = matchedCount >= 2 || preCount >= 2
+        // ══════════════════════════════════════════════════════════════════════
+        // Hybrid Global Motion Fusion
+        //   우선순위: postGlobal(≥2 matched) > preGlobal(≥2 pre-paired) > Gyro > 0
+        //   GyroEgoMotion 이 활성화되면 객체 1개 상황에서도 ego-motion 분리 가능
+        // ══════════════════════════════════════════════════════════════════════
+        val fusedGlobalDx: Float
+        val fusedGlobalDy: Float
+        val hasReliableGlobal: Boolean
+        when {
+            matchedCount >= 2 -> {
+                fusedGlobalDx = postGlobalDx; fusedGlobalDy = postGlobalDy
+                hasReliableGlobal = true
+            }
+            preCount >= 2 -> {
+                fusedGlobalDx = globalDx; fusedGlobalDy = globalDy
+                hasReliableGlobal = true
+            }
+            GyroEgoMotion.isAvailable -> {
+                fusedGlobalDx = gyroGlobalDx; fusedGlobalDy = gyroGlobalDy
+                hasReliableGlobal = true
+            }
+            else -> {
+                fusedGlobalDx = 0f; fusedGlobalDy = 0f
+                hasReliableGlobal = false
+            }
+        }
 
-        // Pass 2: 정확한 postGlobalDx 로 velocityX/Y + trueVx/isMoving 갱신
+        // Pass 2: fusedGlobalDx 로 velocityX/Y + trueVx/isMoving 갱신
         for (m in 0 until matchedCount) {
             val ti    = matchedTi[m]
             val track = trackPool[ti]
-            updateSlotVelocity(ti, matchedRawDx[m], matchedRawDy[m], postGlobalDx, postGlobalDy)
+            updateSlotVelocity(ti, matchedRawDx[m], matchedRawDy[m], fusedGlobalDx, fusedGlobalDy)
             if (hasReliableGlobal) {
-                val instTrueVx = matchedRawDx[m] - postGlobalDx
-                val instTrueVy = matchedRawDy[m] - postGlobalDy
+                val instTrueVx = matchedRawDx[m] - fusedGlobalDx
+                val instTrueVy = matchedRawDy[m] - fusedGlobalDy
                 track.trueVx   = track.trueVx * 0.8f + instTrueVx * 0.2f
                 track.trueVy   = track.trueVy * 0.8f + instTrueVy * 0.2f
                 track.isMoving = Math.hypot(track.trueVx.toDouble(), track.trueVy.toDouble()) >= 1.0
             } else {
-                // 참조쌍 부족 — 카메라 움직임과 객체 움직임 분리 불가 → 보수적으로 처리
+                // 참조쌍 없고 자이로 없음 — 보수적 처리
                 track.trueVx  *= 0.8f
                 track.trueVy  *= 0.8f
                 track.isMoving = false

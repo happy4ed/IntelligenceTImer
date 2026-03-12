@@ -15,6 +15,7 @@ import com.intellitimer.vision.databinding.ActivityMainBinding
 import com.intellitimer.vision.inference.YoloFrameProcessor
 import com.intellitimer.vision.model.AppSettings
 import com.intellitimer.vision.model.TrackedObject
+import com.intellitimer.vision.tracking.GyroEgoMotion
 import com.intellitimer.vision.tracking.TrackerConfig
 import com.intellitimer.vision.ui.LogCollector
 import com.intellitimer.vision.ui.LogViewerActivity
@@ -120,11 +121,13 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         orientationListener?.enable()
+        GyroEgoMotion.register(this)
     }
 
     override fun onPause() {
         super.onPause()
         orientationListener?.disable()
+        GyroEgoMotion.unregister(this)
     }
 
     override fun onDestroy() {

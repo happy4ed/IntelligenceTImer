@@ -8,6 +8,8 @@ import androidx.camera.core.ImageProxy
 import com.intellitimer.vision.camera.FrameProcessor
 import com.intellitimer.vision.model.TrackedObject
 import com.intellitimer.vision.tracking.ByteTracker
+import com.intellitimer.vision.tracking.GyroEgoMotion
+import com.intellitimer.vision.tracking.TrackerConfig
 import com.intellitimer.vision.ui.LogCollector
 import com.intellitimer.vision.ui.OverlayView
 import com.intellitimer.vision.ui.PipelineStats
@@ -183,8 +185,9 @@ class YoloFrameProcessor(
             )
         )
 
-        // ── Phase 5: Absolute Lock-on ByteTrack (effCam 공간, 화면 Kill 비활성)
-        return tracker.update(detections)
+        // ── Phase 5: Absolute Lock-on ByteTrack + Hybrid Ego-Motion 보정
+        val (gyroDx, gyroDy) = GyroEgoMotion.consumeDelta(TrackerConfig.deviceRotation)
+        return tracker.update(detections, gyroDx, gyroDy)
     }
 
     fun release() {
