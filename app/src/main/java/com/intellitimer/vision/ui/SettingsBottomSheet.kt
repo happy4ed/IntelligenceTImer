@@ -135,18 +135,22 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         sliderMatchRadius.addOnChangeListener { _, value, _ ->
             TrackerConfig.matchRadius = value
             tvMatchRadius.text = "${value.toInt()}px"
+            TrackerConfig.saveTrackerParams(requireContext())
         }
         sliderMaxCoast.addOnChangeListener { _, value, _ ->
             TrackerConfig.maxCoastFrames = value.toInt()
             tvMaxCoast.text = "${value.toInt()}프레임"
+            TrackerConfig.saveTrackerParams(requireContext())
         }
         sliderVelocityEMA.addOnChangeListener { _, value, _ ->
             TrackerConfig.velocityEMA = value
             tvVelocityEMA.text = "${"%.2f".format(value)}"
+            TrackerConfig.saveTrackerParams(requireContext())
         }
         sliderDeadZone.addOnChangeListener { _, value, _ ->
             TrackerConfig.deadZone = value
             tvDeadZone.text = "${"%.1f".format(value)}px"
+            TrackerConfig.saveTrackerParams(requireContext())
         }
     }
 

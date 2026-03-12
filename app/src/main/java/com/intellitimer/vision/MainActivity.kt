@@ -72,7 +72,8 @@ class MainActivity : AppCompatActivity() {
 
         // 저장된 설정 복원 — 파이프라인 시작 전 반드시 호출
         AppSettings.load(this)
-        TrackerConfig.loadClassFilter(this)   // [지침 1] 클래스 필터 복원
+        TrackerConfig.loadTrackerParams(this)  // 트래커 파라미터 복원
+        TrackerConfig.loadClassFilter(this)    // 클래스 필터 복원
         LogCollector.i(TAG, "onCreate — 레이아웃 측정 대기")
 
         // LOG 버튼: LogViewerActivity 진입
