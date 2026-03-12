@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    설정 BottomSheet — 탭 구조 (파라미터 / 객체 필터).
+    [지침 2] 상단 탭 2개 → visibility 전환으로 패널 전환.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#DD0A0A14">
+
+    <!-- Handle bar -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="8dp"
+        android:background="#8800E5FF" />
+
+    <!-- ── [지침 2] 탭 바 ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="2dp">
+
+        <TextView
+            android:id="@+id/tabParams"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="파라미터"
+            android:gravity="center"
+            android:textColor="#00E5FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:background="#2200E5FF" />
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:background="#DD0A0A14" />
+
+        <TextView
+            android:id="@+id/tabFilters"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="객체 필터"
+            android:gravity="center"
+            android:textColor="#88FFFFFF"
+            android:textSize="13sp"
+            android:background="#11FFFFFF" />
+    </LinearLayout>
+
+    <!-- 탭 하단 구분선 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#2200E5FF" />
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- Panel A: 파라미터 (기존 슬라이더 전체) -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/panelParams"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="4dp">
+
+            <!-- 탐지 설정 섹션 타이틀 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="탐지 설정"
+                android:textColor="#00E5FF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="8dp" />
+
+            <!-- ── 탐지 민감도 ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="4dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="탐지 민감도"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvConfValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#00E5FF"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderConf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:valueFrom="0.15"
+                android:valueTo="0.85"
+                android:stepSize="0.05"
+                app:thumbColor="#00E5FF"
+                app:trackColorActive="#00E5FF"
+                app:trackColorInactive="#3300E5FF"
+                app:labelBehavior="gone" />
+
+            <!-- ── 연속 확인 프레임 ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="8dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="연속 확인 프레임"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvConfirmValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#39FF73"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:text="높을수록 오탐 감소 (단, 반응 느려짐)"
+                android:textColor="#66FFFFFF"
+                android:textSize="11sp" />
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderConfirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:valueFrom="1"
+                android:valueTo="5"
+                android:stepSize="1"
+                app:thumbColor="#39FF73"
+                app:trackColorActive="#39FF73"
+                app:trackColorInactive="#3339FF73"
+                app:labelBehavior="gone" />
+
+            <!-- ── 최대 동시 탐지 수 ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="8dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="최대 동시 탐지 수"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvMaxDetValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFD600"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderMaxDet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:valueFrom="1"
+                android:valueTo="20"
+                android:stepSize="1"
+                app:thumbColor="#FFD600"
+                app:trackColorActive="#FFD600"
+                app:trackColorInactive="#33FFD600"
+                app:labelBehavior="gone" />
+
+            <!-- ── 트랙 소실 허용 프레임 ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="8dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="트랙 소실 허용 프레임"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvMissingValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FF5555"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:text="높을수록 사라진 객체를 오래 유지"
+                android:textColor="#66FFFFFF"
+                android:textSize="11sp" />
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderMissing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:valueFrom="1"
+                android:valueTo="15"
+                android:stepSize="1"
+                app:thumbColor="#FF5555"
+                app:trackColorActive="#FF5555"
+                app:trackColorInactive="#33FF5555"
+                app:labelBehavior="gone" />
+
+            <!-- 구분선 -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"
+                android:background="#33FFFFFF" />
+
+            <!-- 트래커 파라미터 섹션 타이틀 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="트래커 파라미터"
+                android:textColor="#BB55FF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="20dp"
+                android:paddingBottom="8dp" />
+
+            <!-- ── 매칭 반경 ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="4dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="매칭 반경"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvMatchRadiusValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#BB55FF"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:text="높을수록 먼 거리 객체도 동일 ID 유지"
+                android:textColor="#66FFFFFF"
+                android:textSize="11sp" />
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderMatchRadius"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:valueFrom="20"
+                android:valueTo="200"
+                android:stepSize="10"
+                app:thumbColor="#BB55FF"
+                app:trackColorActive="#BB55FF"
+                app:trackColorInactive="#33BB55FF"
+                app:labelBehavior="gone" />
+
+            <!-- ── 최대 코스팅 프레임 ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="8dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="최대 코스팅 프레임"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvMaxCoastValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#BB55FF"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:text="AI 미탐지 시 ID를 유지할 최대 프레임 수"
+                android:textColor="#66FFFFFF"
+                android:textSize="11sp" />
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderMaxCoast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:valueFrom="5"
+                android:valueTo="30"
+                android:stepSize="1"
+                app:thumbColor="#BB55FF"
+                app:trackColorActive="#BB55FF"
+                app:trackColorInactive="#33BB55FF"
+                app:labelBehavior="gone" />
+
+            <!-- ── 속도 EMA ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="8dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="속도 평활화 (EMA α)"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvVelocityEMAValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#BB55FF"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:text="높을수록 궤적이 부드럽고 느리게 반응"
+                android:textColor="#66FFFFFF"
+                android:textSize="11sp" />
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderVelocityEMA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:valueFrom="0.0"
+                android:valueTo="1.0"
+                android:stepSize="0.05"
+                app:thumbColor="#BB55FF"
+                app:trackColorActive="#BB55FF"
+                app:trackColorInactive="#33BB55FF"
+                app:labelBehavior="gone" />
+
+            <!-- ── 데드존 ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="8dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="정지 데드존"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvDeadZoneValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#BB55FF"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:text="이 거리 미만 이동은 정지로 처리 (px)"
+                android:textColor="#66FFFFFF"
+                android:textSize="11sp" />
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderDeadZone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:valueFrom="0.0"
+                android:valueTo="5.0"
+                android:stepSize="0.5"
+                app:thumbColor="#BB55FF"
+                app:trackColorActive="#BB55FF"
+                app:trackColorInactive="#33BB55FF"
+                app:labelBehavior="gone" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- Panel B: 객체 필터 [지침 3, 4] -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <LinearLayout
+        android:id="@+id/panelFilters"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- [지침 4] 전체 선택 / 전체 해제 버튼 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="6dp">
+
+            <Button
+                android:id="@+id/btnSelectAll"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="34dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:text="전체 선택"
+                android:textColor="#39FF73"
+                android:textSize="12sp"
+                app:strokeColor="#5539FF73"
+                app:strokeWidth="1dp" />
+
+            <Button
+                android:id="@+id/btnClearAll"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="34dp"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:text="전체 해제"
+                android:textColor="#FF5555"
+                android:textSize="12sp"
+                app:strokeColor="#55FF5555"
+                app:strokeWidth="1dp" />
+        </LinearLayout>
+
+        <!-- 구분선 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="#22FFFFFF" />
+
+        <!-- [지침 3] 80개 체크박스 스크롤 그리드 (Kotlin에서 동적 생성) -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/filterContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp" />
+
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+
+    <!-- ── 닫기 버튼 (항상 표시) ── -->
+    <Button
+        android:id="@+id/btnSettingsClose"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="닫기"
+        android:textColor="#00E5FF"
+        android:textSize="12sp"
+        app:strokeColor="#5500E5FF"
+        app:strokeWidth="1dp" />
+
+</LinearLayout>

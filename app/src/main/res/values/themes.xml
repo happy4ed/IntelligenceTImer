@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 풀스크린 카메라 앱 — 상태바/액션바 모두 숨김 -->
+    <style name="Theme.IntelliTimer" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+<item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+</resources>

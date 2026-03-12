@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A0A14">
+
+    <!-- 상단 툴바 -->
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#1A1A2E"
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Debug Log"
+            android:textColor="#00E5FF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="monospace"/>
+
+        <Button
+            android:id="@+id/btnCopy"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Copy"
+            android:textSize="13sp"
+            android:paddingHorizontal="16dp"
+            android:backgroundTint="#00AA88"
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Clear"
+            android:textSize="13sp"
+            android:paddingHorizontal="16dp"
+            android:backgroundTint="#FF5555"
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Close"
+            android:textSize="13sp"
+            android:paddingHorizontal="16dp"
+            android:backgroundTint="#444466"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+
+    <!-- 로그 필터 탭 -->
+    <HorizontalScrollView
+        android:id="@+id/filterBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#12122A"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/filterGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp">
+
+            <Button android:id="@+id/btnAll"
+                style="@style/LogFilterButton"
+                android:text="ALL"/>
+            <Button android:id="@+id/btnInfo"
+                style="@style/LogFilterButton"
+                android:text="I"/>
+            <Button android:id="@+id/btnWarn"
+                style="@style/LogFilterButton"
+                android:text="W"/>
+            <Button android:id="@+id/btnError"
+                style="@style/LogFilterButton"
+                android:text="E"/>
+            <Button android:id="@+id/btnLogcat"
+                style="@style/LogFilterButton"
+                android:text="logcat"/>
+            <Button android:id="@+id/btnPerf"
+                style="@style/LogFilterButton"
+                android:text="PERF"
+                android:textColor="#FFD600"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- 로그 텍스트 영역 -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/filterBar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="#CCDDEE"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:lineSpacingExtra="2dp"
+            android:textIsSelectable="true"/>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

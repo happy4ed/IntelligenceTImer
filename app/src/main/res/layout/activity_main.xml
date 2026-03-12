@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PreviewView 위에 OverlayView 를 match_parent 로 완전히 겹쳐 쌓는 구조.
+    두 View 의 크기가 동일해야 Phase 4 Inverse Scaling 좌표가 정확히 일치한다.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:keepScreenOn="true">
+
+    <!-- CameraX 프리뷰 레이어 (하단) -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:scaleType="fillCenter" />
+
+    <!-- 탐지/트래킹 오버레이 레이어 -->
+    <com.intellitimer.vision.ui.OverlayView
+        android:id="@+id/overlayView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 우상단: 파이프라인 HUD (Delegate / FPS / Inference ms / Det / CPU) -->
+    <com.intellitimer.vision.ui.HudView
+        android:id="@+id/hudView"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 좌상단: 로그 뷰어 진입 버튼 -->
+    <Button
+        android:id="@+id/btnDebug"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:text="LOG"
+        android:textSize="11sp"
+        android:textColor="#00E5FF"
+        android:textStyle="bold"
+        android:paddingHorizontal="14dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
+        app:strokeColor="#5500E5FF"
+        app:strokeWidth="1dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- 우하단: 설정 FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:contentDescription="설정"
+        android:src="@drawable/ic_settings"
+        app:backgroundTint="#CC0A0A14"
+        app:borderWidth="0dp"
+        app:fabSize="mini"
+        app:rippleColor="#2200E5FF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,53 @@
+# ── 빌드 산출물 ──────────────────────────────────────
+/app/build/
+/build/
+*.apk
+*.aab
+
+# ── Gradle 캐시 ───────────────────────────────────────
+/.gradle/
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+
+# ── 로컬 환경 설정 (SDK 경로 등) ─────────────────────
+local.properties
+
+# ── 서명 키 (절대 커밋 금지!) ─────────────────────────
+*.jks
+*.keystore
+keystore.properties
+
+# ── 민감한 스크립트 (토큰 하드코딩) ──────────────────
+deploy.sh
+telegram_bridge.py
+telegram_bridge.sh
+
+# ── Python 가상환경 및 캐시 ───────────────────────────
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# ── 루트 대용량 ML 모델 파일 (개발 산출물) ───────────
+# app/src/main/assets/ 내 .tflite 는 앱 빌드에 필요하므로 제외 안 함
+/yolov10n*/
+/yolo11n_saved_model/
+/*.pt
+/*.onnx
+/yolov10n*.tflite
+/calibration_image_sample_data_20x128x128x3_float32.npy
+*.npy
+
+# ── Android Studio / IDE ─────────────────────────────
+.idea/
+*.iml
+.DS_Store
+captures/
+.externalNativeBuild/
+.cxx/
+
+# ── 프로파일링 / 로그 ─────────────────────────────────
+*.hprof
+*.log
+/profiling/
