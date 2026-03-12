@@ -201,16 +201,26 @@ class ByteTracker {
         val postGlobalDx = if (matchedCount >= 2) median(matchedRawDx, matchedCount) else globalDx
         val postGlobalDy = if (matchedCount >= 2) median(matchedRawDy, matchedCount) else globalDy
 
+        // globalDx 추정 신뢰성: 2개 이상 참조쌍이 있어야 카메라↔객체 분리 가능
+        val hasReliableGlobal = matchedCount >= 2 || preCount >= 2
+
         // Pass 2: 정확한 postGlobalDx 로 velocityX/Y + trueVx/isMoving 갱신
         for (m in 0 until matchedCount) {
             val ti    = matchedTi[m]
             val track = trackPool[ti]
             updateSlotVelocity(ti, matchedRawDx[m], matchedRawDy[m], postGlobalDx, postGlobalDy)
-            val instTrueVx = matchedRawDx[m] - postGlobalDx
-            val instTrueVy = matchedRawDy[m] - postGlobalDy
-            track.trueVx   = track.trueVx * 0.8f + instTrueVx * 0.2f
-            track.trueVy   = track.trueVy * 0.8f + instTrueVy * 0.2f
-            track.isMoving = Math.hypot(track.trueVx.toDouble(), track.trueVy.toDouble()) >= 1.5
+            if (hasReliableGlobal) {
+                val instTrueVx = matchedRawDx[m] - postGlobalDx
+                val instTrueVy = matchedRawDy[m] - postGlobalDy
+                track.trueVx   = track.trueVx * 0.8f + instTrueVx * 0.2f
+                track.trueVy   = track.trueVy * 0.8f + instTrueVy * 0.2f
+                track.isMoving = Math.hypot(track.trueVx.toDouble(), track.trueVy.toDouble()) >= 1.0
+            } else {
+                // 참조쌍 부족 — 카메라 움직임과 객체 움직임 분리 불가 → 보수적으로 처리
+                track.trueVx  *= 0.8f
+                track.trueVy  *= 0.8f
+                track.isMoving = false
+            }
         }
 
         // Phase 5 — Spawn
